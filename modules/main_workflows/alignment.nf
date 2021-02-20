@@ -33,6 +33,7 @@ include { bwa_index } from '../tools/bwa/bwa'
 include { bwa_align } from '../tools/bwa/bwa'
 include { sam_sort } from '../tools/bwa/bwa'
 include { mpileup } from '../tools/bwa/bwa'
+include { Kraken } from '../subworkflows/kraken'
 
 ////////////////////////////////////////////////////
 /* --           RUN MAIN WORKFLOW              -- */
@@ -67,11 +68,17 @@ workflow Alignment {
         gtf
     )
 
+    Kraken(
+        trimgalore.out.reads,
+        'Kraken'
+    )
+
     multiqc(
         fastqc.out.zip.collect{ it[1] },
         trimgalore.out.zip.collect{ it[1] },
         trimgalore.out.log.collect{ it[1] },
-        sam_sort.out.logs.collect{ it[1] }
+        sam_sort.out.logs.collect{ it[1] },
+        Kraken.out.krakenreport.collect{ it[1] }
     )
 
 } 

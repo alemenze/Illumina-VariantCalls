@@ -20,6 +20,7 @@ process multiqc {
         path ('trimgalore/fastqc/*')
         path ('trimgalore/*')
         path ('bwa/*')
+        path ('kraken/*')
     
     output:
         path "*multiqc_report.html", emit: report
