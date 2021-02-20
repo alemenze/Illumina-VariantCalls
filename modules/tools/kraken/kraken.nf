@@ -6,6 +6,7 @@ nextflow.enable.dsl = 2
 // Process definition
 process Kraken2 {
     tag "${reads}"
+    label 'process_medium'
 
     publishDir "${params.outdir}/kraken2/${meta}",
         mode: "copy",
@@ -45,6 +46,8 @@ process Kraken2_db_build {
 
     container "alemenze/kraken2-docker"
 
+    label 'process_low'
+
     input:
         path(kraken)
         val(kraken_name)
@@ -61,6 +64,8 @@ process Kraken2_db_build {
 process Krona {
 
     container "alemenze/kraken2-docker"
+
+    label 'process_medium'
 
     publishDir "${params.outdir}/kraken2_krona/${meta}",
         mode: "copy",
