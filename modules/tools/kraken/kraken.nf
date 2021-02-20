@@ -6,7 +6,7 @@ nextflow.enable.dsl = 2
 // Process definition
 process Kraken2 {
     tag "${reads}"
-    label 'process_medium'
+    label 'process_high'
 
     publishDir "${params.outdir}/kraken2/${meta}",
         mode: "copy",
