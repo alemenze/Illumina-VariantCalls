@@ -35,7 +35,7 @@ process Kraken2 {
             read_len='150'
         }
         """
-        kraken2 -db $db --report ${meta}_kraken2.report $input > ${meta}_kraken2.output
+        kraken2 --threads ${task.cpus} -db $db --report ${meta}_kraken2.report $input > ${meta}_kraken2.output
         cut -f 2,3 ${meta}_kraken2.output > ${meta}_kraken2.krona
 
         bracken -d $db -r $read_len -i ${meta}_kraken2.report -l $params.kraken_tax_level -o ${meta}_bracken.tsv
