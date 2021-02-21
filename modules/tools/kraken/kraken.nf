@@ -31,7 +31,7 @@ process Kraken2 {
             read_len='250'
         }
         if (read_type=='paired') {
-            input="--fastq-input --gzip-compressed --paired $reads"
+            input="--gzip-compressed --paired $reads"
             read_len='150'
         }
         """
