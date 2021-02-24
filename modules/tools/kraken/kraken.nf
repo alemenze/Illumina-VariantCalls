@@ -16,7 +16,7 @@ process Kraken2 {
     container "alemenze/kraken2-docker"
 
     input:
-        tuple val(meta), path(reads)
+        tuple val(meta), path(read1), path(read2)
         path(db)
         val(read_type)
 
@@ -31,7 +31,7 @@ process Kraken2 {
             read_len='250'
         }
         if (read_type=='paired') {
-            input="--gzip-compressed --paired $reads"
+            input="--gzip-compressed --paired $read1 $read2"
             read_len='150'
         }
         """

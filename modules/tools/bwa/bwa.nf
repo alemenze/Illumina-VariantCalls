@@ -8,7 +8,7 @@ process bwa_index {
     tag "${meta}"
     label 'process_medium'
 
-    publishDir "${params.outdir}/bwa/",
+    publishDir "${params.outdir}/bwa/${meta}",
         mode: "copy",
         overwrite: true,
         saveAs: { filename -> filename }
@@ -33,7 +33,7 @@ process bwa_align {
     tag "${meta}"
     label 'process_high'
 
-    publishDir "${params.outdir}/bwa/",
+    publishDir "${params.outdir}/bwa/${meta}",
         mode: "copy",
         overwrite: true,
         saveAs: { filename -> filename }
@@ -41,7 +41,7 @@ process bwa_align {
     container "alemenze/bwa-tools"
 
     input:
-        tuple val(meta), path(reads)
+        tuple val(meta), path(read1), path(read2)
         path(genome)
         path(index)
     
@@ -50,7 +50,7 @@ process bwa_align {
 
     script:
         """
-        bwa mem -t ${task.cpus} $index/${genome} $reads > ${meta}.sam
+        bwa mem -t ${task.cpus} $index/${genome} $read1 $read2 > ${meta}.sam
         """
 
 }
@@ -59,7 +59,7 @@ process sam_sort {
     tag "${meta}"
     label 'process_medium'
 
-    publishDir "${params.outdir}/bwa/",
+    publishDir "${params.outdir}/bwa/${meta}",
         mode: "copy",
         overwrite: true,
         saveAs: { filename -> filename }
@@ -90,7 +90,7 @@ process mpileup {
     tag "${meta}"
     label 'process_medium'
 
-    publishDir "${params.outdir}/vcfs/",
+    publishDir "${params.outdir}/vcfs/${meta}",
         mode: "copy",
         overwrite: true,
         saveAs: { filename -> filename }
