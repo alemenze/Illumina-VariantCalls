@@ -41,7 +41,7 @@ process bwa_align {
     container "alemenze/bwa-tools"
 
     input:
-        tuple val(meta), path(read1), path(read2)
+        tuple val(meta), path(reads)
         path(genome)
         path(index)
     
@@ -50,7 +50,7 @@ process bwa_align {
 
     script:
         """
-        bwa mem -t ${task.cpus} $index/${genome} $read1 $read2 > ${meta}.sam
+        bwa mem -t ${task.cpus} $index/${genome} $reads > ${meta}.sam
         """
 
 }
