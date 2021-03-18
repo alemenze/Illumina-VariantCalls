@@ -5,10 +5,10 @@ nextflow.enable.dsl=2
 
 // Process definition
 process bwa_index {
-    tag "${meta}"
+    tag "${fasta}"
     label 'process_medium'
 
-    publishDir "${params.outdir}/bwa/${meta}",
+    publishDir "${params.outdir}/bwaindex/",
         mode: "copy",
         overwrite: true,
         saveAs: { filename -> filename }
@@ -19,12 +19,12 @@ process bwa_index {
         path(genome)
     
     output:
-        path('*'), emit: index
+        path('bwa'), emit: index
 
     script:
         """
-        bwa index $genome
-        mkdir Index && mv ${genome}* Index
+        mkdir bwa
+        bwa index $genome -p bwa/${genome.baseName}
         """
 
 }
@@ -42,7 +42,6 @@ process bwa_align {
 
     input:
         tuple val(meta), path(reads)
-        path(genome)
         path(index)
     
     output:
@@ -50,7 +49,8 @@ process bwa_align {
 
     script:
         """
-        bwa mem -t ${task.cpus} $index/${genome} $reads > ${meta}.sam
+        INDEX=`find -L ./ -name "*.amb" | sed 's/.amb//'`
+        bwa mem -t ${task.cpus} \$INDEX $reads > ${meta}.sam
         """
 
 }
@@ -100,7 +100,6 @@ process mpileup {
     input:
         tuple val(meta), path(bam) 
         path(index)
-        path(genome)
         path(gtf)
     
     output:
@@ -108,7 +107,8 @@ process mpileup {
 
     script:
         """
-        bcftools mpileup -f $index/${genome} $bam | bcftools call -mv -Ov > variants_temp.vcf
+        INDEX=`find -L ./ -name "*.amb" | sed 's/.amb//'`
+        bcftools mpileup -f \$INDEX $bam | bcftools call -mv -Ov > variants_temp.vcf
         bedtools intersect -a $gtf -b variants_temp.vcf -wa -u > ${meta}.variants.vcf
         """
 }
