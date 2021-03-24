@@ -62,7 +62,7 @@ workflow Alignment {
     )
     mpileup(
         sam_sort.out.aligned_bam,
-        bwa_index.out.index,
+        genome,
         gtf
     )
 

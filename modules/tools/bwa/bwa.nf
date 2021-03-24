@@ -99,7 +99,7 @@ process mpileup {
 
     input:
         tuple val(meta), path(bam) 
-        path(index)
+        path(genome)
         path(gtf)
     
     output:
@@ -107,8 +107,7 @@ process mpileup {
 
     script:
         """
-        INDEX=`find -L ./ -name "*.amb" | sed 's/.amb//'`
-        bcftools mpileup -f \$INDEX $bam | bcftools call -mv -Ov > variants_temp.vcf
+        bcftools mpileup -f $genome $bam | bcftools call -mv -Ov > variants_temp.vcf
         bedtools intersect -a $gtf -b variants_temp.vcf -wa -u > ${meta}.variants.vcf
         """
 }
