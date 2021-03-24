@@ -38,11 +38,11 @@ process bwa_align {
         overwrite: true,
         saveAs: { filename -> filename }
 
-    container "alemenze/bwa-tools"
+    container "https://depot.galaxyproject.org/singularity/mulled-v2-fe8faa35dbf6dc65a0f7f5d4ea12e31a79f73e40:eabfac3657eda5818bae4090db989e3d41b01542-0"
 
     input:
         tuple val(meta), path(reads)
-        path(index)
+        path index
     
     output:
         tuple val(meta), path("*.sam"),     emit: aligned_sam
