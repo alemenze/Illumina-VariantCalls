@@ -55,7 +55,7 @@ workflow Alignment {
 
     bwa_align(
         trimgalore.out.reads,
-        bwa_index.out.index,
+        bwa_index.out.index.collect(),
     )
     sam_sort(
         bwa_align.out.aligned_sam
