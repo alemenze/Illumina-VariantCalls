@@ -31,8 +31,6 @@ include { trimgalore } from '../tools/trimgalore/trimgalore'
 include { multiqc } from '../tools/multiqc/multiqc'
 include { bwa_index } from '../tools/bwa/bwa'
 include { bwa_align } from '../tools/bwa/bwa'
-include { sam_sort } from '../tools/bwa/bwa'
-include { mpileup } from '../tools/bwa/bwa'
 include { Kraken } from '../subworkflows/kraken'
 
 ////////////////////////////////////////////////////
