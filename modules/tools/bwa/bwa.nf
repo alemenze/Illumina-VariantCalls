@@ -58,7 +58,7 @@ process bwa_align {
         INDEX=`find -L ./ -name "*.amb" | sed 's/.amb//'`
         bwa mem -t ${task.cpus} \$INDEX $reads > ${meta}.sam
 
-        samtools view -hSbo ${meta}.bam $sam
+        samtools view -hSbo ${meta}.bam ${meta}.sam
         samtools sort ${meta}.bam -o ${meta}.sorted.bam
         samtools index ${meta}.sorted.bam
         samtools flagstat ${meta}.sorted.bam > ${meta}.sorted.bam.flagstat
