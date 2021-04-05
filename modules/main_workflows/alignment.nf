@@ -56,16 +56,10 @@ workflow Alignment {
     bwa_align(
         trimgalore.out.reads,
         bwa_index.out.index.collect(),
+        genome.collect(),
+        gtf.collect()
     )
-    sam_sort(
-        bwa_align.out.aligned_sam
-    )
-    mpileup(
-        sam_sort.out.aligned_bam,
-        genome,
-        gtf
-    )
-
+    
     Kraken(
         trimgalore.out.reads,
         'Kraken'
@@ -75,7 +69,7 @@ workflow Alignment {
         fastqc.out.zip.collect{ it[1] },
         trimgalore.out.zip.collect{ it[1] },
         trimgalore.out.log.collect{ it[1] },
-        sam_sort.out.logs.collect{ it[1] },
+        bwa_align.out.logs.collect{ it[1] },
         Kraken.out.krakenreport.collect{ it[1] }
     )
 

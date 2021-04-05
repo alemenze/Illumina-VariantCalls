@@ -38,76 +38,35 @@ process bwa_align {
         overwrite: true,
         saveAs: { filename -> filename }
 
-    container "https://depot.galaxyproject.org/singularity/mulled-v2-fe8faa35dbf6dc65a0f7f5d4ea12e31a79f73e40:eabfac3657eda5818bae4090db989e3d41b01542-0"
+    container "alemenze/bwa-tools"
 
     input:
         tuple val(meta), path(reads)
         path index
+        path(genome)
+        path(gtf)
     
     output:
         tuple val(meta), path("*.sam"),     emit: aligned_sam
+        tuple val(meta), path('*.sorted.{bam,bam.bai}'), emit: aligned_bams
+        tuple val(meta), path('*.sorted.bam'), emit: aligned_bam
+        tuple val(meta), path("*{flagstat,idxstats,stats}"),   emit: logs
+        tuple val(meta), path('*.variants.vcf'), emit: vcf
 
     script:
         """
         INDEX=`find -L ./ -name "*.amb" | sed 's/.amb//'`
         bwa mem -t ${task.cpus} \$INDEX $reads > ${meta}.sam
-        """
 
-}
-
-process sam_sort {
-    tag "${meta}"
-    label 'process_medium'
-
-    publishDir "${params.outdir}/bwa/${meta}",
-        mode: "copy",
-        overwrite: true,
-        saveAs: { filename -> filename }
-
-    container "alemenze/bwa-tools"
-
-    input:
-        tuple val(meta), path(sam)
-    
-    output:
-        tuple val(meta), path('*.sorted.{bam,bam.bai}'), emit: aligned_bams
-        tuple val(meta), path('*.sorted.bam'), emit: aligned_bam
-        tuple val(meta), path("*{flagstat,idxstats,stats}"),   emit: logs
-
-    script:
-        """
         samtools view -hSbo ${meta}.bam $sam
         samtools sort ${meta}.bam -o ${meta}.sorted.bam
         samtools index ${meta}.sorted.bam
         samtools flagstat ${meta}.sorted.bam > ${meta}.sorted.bam.flagstat
         samtools idxstats ${meta}.sorted.bam > ${meta}.sorted.bam.idxstats
         samtools stats ${meta}.sorted.bam > ${meta}.sorted.bam.stats
-        """
 
-}
-
-process mpileup {
-    tag "${meta}"
-    label 'process_medium'
-
-    publishDir "${params.outdir}/vcfs/${meta}",
-        mode: "copy",
-        overwrite: true,
-        saveAs: { filename -> filename }
-
-    container "alemenze/bwa-tools"
-
-    input:
-        tuple val(meta), path(bam) 
-        path(genome)
-        path(gtf)
-    
-    output:
-        tuple val(meta), path('*.variants.vcf'), emit: vcf
-
-    script:
-        """
-        bcftools mpileup -f $genome $bam | bcftools call -mv -Ov > variants_temp.vcf
+        bcftools mpileup -f $genome ${meta}.sorted.bam | bcftools call -mv -Ov > variants_temp.vcf
         bedtools intersect -a $gtf -b variants_temp.vcf -wa -u > ${meta}.variants.vcf
         """
+
 }
