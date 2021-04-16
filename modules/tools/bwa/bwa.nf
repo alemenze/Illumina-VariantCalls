@@ -52,6 +52,7 @@ process bwa_align {
         tuple val(meta), path('*.sorted.bam'), emit: aligned_bam
         tuple val(meta), path("*{flagstat,idxstats,stats}"),   emit: logs
         tuple val(meta), path('*.variants.vcf'), emit: vcf
+        tuple val(meta), path('*.variants_raw.vcf'), emit: vcf
 
     script:
         """
@@ -65,8 +66,8 @@ process bwa_align {
         samtools idxstats ${meta}.sorted.bam > ${meta}.sorted.bam.idxstats
         samtools stats ${meta}.sorted.bam > ${meta}.sorted.bam.stats
 
-        bcftools mpileup -f $genome ${meta}.sorted.bam | bcftools call -mv -Ov > variants_temp.vcf
-        bedtools intersect -a $gtf -b variants_temp.vcf -wa -u > ${meta}.variants.vcf
+        bcftools mpileup -f $genome ${meta}.sorted.bam | bcftools call -mv -Ov > ${meta}.variants_raw.vcf
+        bedtools intersect -a $gtf -b ${meta}.variants_raw.vcf -wa -u > ${meta}.variants.vcf
         """
 
 }
