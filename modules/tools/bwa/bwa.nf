@@ -52,7 +52,7 @@ process bwa_align {
         tuple val(meta), path('*.sorted.bam'), emit: aligned_bam
         tuple val(meta), path("*{flagstat,idxstats,stats}"),   emit: logs
         tuple val(meta), path('*.variants.vcf'), emit: vcf
-        tuple val(meta), path('*.variants_raw.vcf'), emit: vcf
+        tuple val(meta), path('*.variants_raw.vcf'), emit: vcf_raw
 
     script:
         """
