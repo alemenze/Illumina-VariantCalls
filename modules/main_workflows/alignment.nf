@@ -13,7 +13,7 @@ if (params.gtf) {file(params.gtf, checkIfExists: true)} else { exit 1, 'GTF file
 Channel
     .fromPath(params.samplesheet)
     .splitCsv(header:true)
-    .map{ row -> tuple(row.sample_id, file(row.read1), file(row.read2))}
+    .map{ row -> tuple(row.sample_id, file(row.read1))}
     .set { sample_reads }
 Channel
     .fromPath(params.genome)

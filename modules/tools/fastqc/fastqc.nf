@@ -16,7 +16,7 @@ process fastqc {
     container "biocontainers/fastqc:v0.11.9_cv7"
 
     input:
-        tuple val(meta), path(read1), path(read2)
+        tuple val(meta), path(read1)
     
     output:
         tuple val(meta), path("*.zip"), emit: zip
@@ -24,7 +24,7 @@ process fastqc {
 
     script:
         """
-        fastqc -q $read1 $read2
+        fastqc -q $read1
         """
 
 }
