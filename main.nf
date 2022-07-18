@@ -36,13 +36,13 @@ if (params.help) {
 ////////////////////////////////////////////////////
 /* --              IMPORT MODULES              -- */
 ////////////////////////////////////////////////////
-
+include { Alignment } from './modules/main_workflows/alignment'
 ////////////////////////////////////////////////////
 /* --           RUN MAIN WORKFLOW              -- */
 ////////////////////////////////////////////////////
 
 // Full workflow demultiplexing through Trycycler
 workflow {
-    include { Alignment } from './modules/main_workflows/alignment'
+    
     Alignment()
 }
