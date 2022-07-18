@@ -27,7 +27,7 @@ process Kraken2 {
 
     script:
         if (read_type=='single') {
-            input="$reads"
+            input="--gzip-compressed $reads"
             read_len='250'
         }
         if (read_type=='paired') {
@@ -46,7 +46,7 @@ process Kraken2_db_build {
 
     container "alemenze/kraken2-docker"
 
-    label 'process_low'
+    label 'process_medium'
 
     input:
         path(kraken)

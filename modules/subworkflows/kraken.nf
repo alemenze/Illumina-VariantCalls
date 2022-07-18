@@ -32,7 +32,7 @@ workflow Kraken {
         Kraken2(
             reads,
             Kraken2_db_build.out.kraken2_ch,
-            'paired'
+            'single'
         )
 
         Krona(
